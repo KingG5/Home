@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Test Bar App - Project Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            padding: 20px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1.1em;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .domain-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            border-top: 5px solid;
+            cursor: pointer;
+        }
+
+        .domain-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .domain-card.data { border-color: #10B981; }
+        .domain-card.logic { border-color: #F59E0B; }
+        .domain-card.realtime { border-color: #EF4444; }
+        .domain-card.api { border-color: #8B5CF6; }
+        .domain-card.player { border-color: #3B82F6; }
+        .domain-card.dj { border-color: #EC4899; }
+        .domain-card.display { border-color: #06B6D4; }
+        .domain-card.infra { border-color: #6B7280; }
+
+        .domain-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .domain-icon {
+            font-size: 2.5em;
+        }
+
+        .domain-title {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .domain-subtitle {
+            color: #6b7280;
+            font-size: 0.9em;
+        }
+
+        .file-list {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .file-item {
+            padding: 8px;
+            margin: 5px 0;
+            background: #f9fafb;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+
+        .agent-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0fdf4;
+            border-radius: 8px;
+            border-left: 4px solid #10B981;
+        }
+
+        .agent-section h4 {
+            color: #065f46;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .agent-task {
+            padding: 5px 0;
+            color: #047857;
+            font-size: 0.9em;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .status-complete {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-ready {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .roadmap {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .roadmap h2 {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        .phase {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid;
+        }
+
+        .phase.complete {
+            background: #D1FAE5;
+            border-color: #10B981;
+        }
+
+        .phase.ready {
+            background: #DBEAFE;
+            border-color: #3B82F6;
+        }
+
+        .phase.future {
+            background: #F3F4F6;
+            border-color: #6B7280;
+        }
+
+        .phase h3 {
+            margin-bottom: 15px;
+        }
+
+        .phase ul {
+            margin-left: 20px;
+        }
+
+        .phase li {
+            margin: 8px 0;
+        }
+
+        .architecture {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .architecture h2 {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        .arch-diagram {
+            background: #f9fafb;
+            padding: 30px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            background: white;
+            border: 2px solid #3B82F6;
+            border-radius: 8px;
+            color: #1e3a8a;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #3B82F6;
+            color: white;
+        }
+
+        .nav-btn.active {
+            background: #1e3a8a;
+            color: white;
+            border-color: #1e3a8a;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quick-actions {
+            background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
+            padding: 30px;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .quick-actions h3 {
+            margin-bottom: 15px;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-card:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Blind Test Bar App - Project Dashboard</h1>
+            <p>Navigate the codebase, understand domains, and assign work to autonomous agents</p>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #10B981;"></div>
+                    <span>Data Layer</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #F59E0B;"></div>
+                    <span>Business Logic</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #EF4444;"></div>
+                    <span>Real-Time</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #8B5CF6;"></div>
+                    <span>API Layer</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #3B82F6;"></div>
+                    <span>Player UI</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #EC4899;"></div>
+                    <span>DJ UI</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #06B6D4;"></div>
+                    <span>Display UI</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #6B7280;"></div>
+                    <span>Infrastructure</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h3>📋 Quick Actions</h3>
+            <div class="action-grid">
+                <div class="action-card" onclick="window.open('DEMO.html', '_blank')">
+                    <div style="font-size: 2em; margin-bottom: 10px;">👁️</div>
+                    <div>View Demo</div>
+                </div>
+                <div class="action-card" onclick="window.open('README.md', '_blank')">
+                    <div style="font-size: 2em; margin-bottom: 10px;">📖</div>
+                    <div>Read Docs</div>
+                </div>
+                <div class="action-card" onclick="window.open('SETUP.md', '_blank')">
+                    <div style="font-size: 2em; margin-bottom: 10px;">⚙️</div>
+                    <div>Setup Guide</div>
+                </div>
+                <div class="action-card" onclick="alert('Run: npm run dev')">
+                    <div style="font-size: 2em; margin-bottom: 10px;">🚀</div>
+                    <div>Start App</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showSection('domains')">🏗️ Domains</button>
+            <button class="nav-btn" onclick="showSection('roadmap')">🗺️ Roadmap</button>
+            <button class="nav-btn" onclick="showSection('architecture')">🎯 Architecture</button>
+            <button class="nav-btn" onclick="showSection('agents')">🤖 Agent Guide</button>
+        </div>
+
+        <!-- DOMAINS SECTION -->
+        <div id="domains" class="section active">
+            <div class="grid">
+                <!-- Domain 1: Data Layer -->
+                <div class="domain-card data">
+                    <div class="domain-header">
+                        <div class="domain-icon">🗄️</div>
+                        <div>
+                            <div class="domain-title">Data Layer</div>
+                            <div class="domain-subtitle">backend/src/models/</div>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 15px; color: #4b5563;">Database schemas and data management</p>
+                    <div class="file-list">
+                        <div class="file-item">📄 User.ts</div>
+                        <div class="file-item">📄 Game.ts</div>
+                        <div class="file-item">📄 Question.ts</div>
+                        <div class="file-item">📄 Answer.ts</div>
+                        <div class="file-item">📄 GamePlayer.ts</div>
+                    </div>
+                    <span class="status-badge status-complete">✅ Complete</span>
+                    <div class="agent-section">
+                        <h4>🤖 Potential Agent Work:</h4>
+                        <div class="agent-task">• Add UserProfile model</div>
+                        <div class="agent-task">• Add Achievement model</div>
+                        <div class="agent-task">• Add GameHistory model</div>
+                        <div class="agent-task">• Add Category/Tag models</div>
+                    </div>
+                </div>
+
+                <!-- Domain 2: Business Logic -->
+                <div class="domain-card logic">
+                    <div class="domain-header">
+                        <div class="domain-icon">⚙️</div>
+                        <div>
+                            <div class="domain-title">Business Logic</div>
+                            <div class="domain-subtitle">backend/src/services/</div>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 15px; color: #4b5563;">Core application logic</p>
+                    <div class="file-list">
+                        <div class="file-item">📄 authService.ts</div>
+                        <div class="file-item">📄 gameService.ts</div>
+                        <div class="file-item">📄 spotifyService.ts</div>
+                        <div class="file-item">📄 qrCodeService.ts</div>
+                    </div>
+                    <span class="status-badge status-complete">✅ Complete</span>
+                    <div class="agent-section">
+                        <h4>🤖 Potential Agent Work:</h4>
+                        <div class="agent-task">• Add statsService.ts</div>
+                        <div class="agent-task">• Add achievementService.ts</div>
+                        <div class="agent-task">• Add tournamentService.ts</div>
+                        <div class="agent-task">• Add playlistService.ts</div>
+                    </div>
+                </div>
+
+                <!-- Domain 3: Real-Time -->
+                <div class="domain-card realtime">
+                    <div class="domain-header">
+                        <div class="domain-icon">🔌</div>
+                        <div>
+                            <div class="domain-title">Real-Time</div>
+                            <div class="domain-subtitle">backend/src/socket/</div>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 15px; color: #4b5563;">WebSocket event handling</p>
+                    <div class="file-list">
+                        <div class="file-item">📄 gameSocket.ts</div>
+                    </div>
+                    <span class="status-badge status-complete">✅ Complete</span>
+                    <div class="agent-section">
+                        <h4>🤖 Potential Agent Work:</h4>
+                        <div class="agent-task">• Add chatSocket.ts</div>
+                        <div class="agent-task">• Add spectatorSocket.ts</div>
+                        <div class="agent-task">• Add reactionSocket.ts</div>
+                        <div class="agent-task">• Add notificationSocket.ts</div>
+                    </div>
+                </div>
+
+                <!-- Domain 4: API Layer -->
+                <div class="domain-card api">
+                    <div class="domain-header">
+                        <div class="domain-icon">🌐</div>
+                        <div>
+                            <div class="domain-title">API Layer</div>
+                            <div class="domain-subtitle">backend/src/routes/ & controllers/</div>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 15px; color: #4b5563;">REST API endpoints</p>
+                    <div class="file-list">
+                        <div class="file-item">📄 authRoutes.ts</div>
+                        <div class="file-item">📄 gameRoutes.ts</div>
+                        <div class="file-item">📄 spotifyRoutes.ts</div>
+                    </div>
+                    <span class="status-badge status-complete">✅ Complete</span>
+                    <div class="agent-section">
+                        <h4>🤖 Potential Agent Work:</h4>
+                        <div class="agent-task">• Add statsRoutes.ts</div>
+                        <div class="agent-task">• Add exportRoutes.ts</div>
+                        <div class="agent-task">• Add webhookRoutes.ts</div>
+                        <div class="agent-task">• Add adminRoutes.ts</div>
+                    </div>
+                </div>
+
+                <!-- Domain 5: Player Interface -->
+                <div class="domain-card player">
+                    <div class="domain-header">
+                        <div class="domain-icon">📱</div>
+                        <div>
+                            <div class="domain-title">Player Interface</div>
+                            <div class="domain-subtitle">frontend/src/pages/Player/</div>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 15px; color: #4b5563;">Mobile player experience</p>
+                    <div class="file-list">
+                        <div class="file-item">📄 PlayerPage.tsx</div>
+                        <div class="file-item">📄 LoginScreen.tsx</div>
+                        <div class="file-item">📄 GameScreen.tsx</div>
+                    </div>
+                    <span class="status-badge status-complete">✅ Complete</span>
+                    <div class="agent-section">
+                        <h4>🤖 Potential Agent Work:</h4>
+                        <div class="agent-task">• Add ProfileScreen.tsx</div>
+                        <div class="agent-task">• Add HistoryScreen.tsx</div>
+                        <div class="agent-task">• Add AchievementsScreen.tsx</div>
+                        <div class="agent-task">• Add SettingsScreen.tsx</div>
+                    </div>
+                </div>
+
+                <!-- Domain 6: DJ Control Panel -->
+                <div class="domain-card dj">
+                    <div class="domain-header">
+                        <div class="domain-icon">🎛️</div>
+                        <div>
+                            <div class="domain-title">DJ Control Panel</div>
+                            <div class="domain-subtitle">frontend/src/pages/DJ/</div>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 15px; color: #4b5563;">Game master interface</p>
+                    <div class="file-list">
+                        <div class="file-item">📄 DJPage.tsx</div>
+                        <div class="file-item">📄 CreateGameScreen.tsx</div>
+                        <div class="file-item">📄 ControlPanel.tsx</div>
+                    </div>
+                    <span class="status-badge status-complete">✅ Complete</span>
+                    <div class="agent-section">
+                        <h4>🤖 Potential Agent Work:</h4>
+                        <div class="agent-task">• Add AnalyticsDashboard.tsx</div>
+                        <div class="agent-task">• Add PlaylistManager.tsx</div>
+                        <div class="agent-task">• Add QuestionBuilder.tsx</div>
+                        <div class="agent-task">• Add GameTemplates.tsx</div>
+                    </div>
+                </div>
+
+                <!-- Domain 7: Display Screen -->
+                <div class="domain-card display">
+                    <div class="domain-header">
+                        <div class="domain-icon">📺</div>
+                        <div>
+                            <div class="domain-title">Display Screen</div>
+                            <div class="domain-subtitle">frontend/src/pages/Display/</div>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 15px; color: #4b5563;">Public big screen view</p>
+                    <div class="file-list">
+                        <div class="file-item">📄 DisplayPage.tsx</div>
+                    </div>
+                    <span class="status-badge status-complete">✅ Complete</span>
+                    <div class="agent-section">
+                        <h4>🤖 Potential Agent Work:</h4>
+                        <div class="agent-task">• Add ThemeCustomizer.tsx</div>
+                        <div class="agent-task">• Add AnimationEngine.tsx</div>
+                        <div class="agent-task">• Add SponsorAds.tsx</div>
+                        <div class="agent-task">• Add VideoBackground.tsx</div>
+                    </div>
+                </div>
+
+                <!-- Domain 8: Infrastructure -->
+                <div class="domain-card infra">
+                    <div class="domain-header">
+                        <div class="domain-icon">🛠️</div>
+                        <div>
+                            <div class="domain-title">Infrastructure</div>
+                            <div class="domain-subtitle">Root & config files</div>
+                        </div>
+                    </div>
+                    <p style="margin-bottom: 15px; color: #4b5563;">Setup, deployment, documentation</p>
+                    <div class="file-list">
+                        <div class="file-item">📄 setup.js</div>
+                        <div class="file-item">📄 package.json</div>
+                        <div class="file-item">📄 README.md</div>
+                    </div>
+                    <span class="status-badge status-complete">✅ Complete</span>
+                    <div class="agent-section">
+                        <h4>🤖 Potential Agent Work:</h4>
+                        <div class="agent-task">• Add Dockerfile</div>
+                        <div class="agent-task">• Add CI/CD pipeline</div>
+                        <div class="agent-task">• Add monitoring setup</div>
+                        <div class="agent-task">• Add backup scripts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROADMAP SECTION -->
+        <div id="roadmap" class="section">
+            <div class="roadmap">
+                <h2>🗺️ Feature Roadmap</h2>
+
+                <div class="phase complete">
+                    <h3>✅ Phase 1: Core MVP (COMPLETED)</h3>
+                    <ul>
+                        <li>✅ User authentication (quick join, login, signup)</li>
+                        <li>✅ Game creation & management</li>
+                        <li>✅ Real-time gameplay with Socket.io</li>
+                        <li>✅ QR code access for players</li>
+                        <li>✅ Spotify integration</li>
+                        <li>✅ Three interfaces (Player, DJ, Display)</li>
+                        <li>✅ Leaderboard & speed-based scoring</li>
+                        <li>✅ Timer system with visual feedback</li>
+                    </ul>
+                </div>
+
+                <div class="phase ready">
+                    <h3>🚀 Phase 2: Enhanced Experience (READY FOR AGENTS)</h3>
+                    <ul>
+                        <li>☐ Player profiles & avatars</li>
+                        <li>☐ Game history & statistics dashboard</li>
+                        <li>☐ Achievement system (badges, milestones)</li>
+                        <li>☐ Sound effects & animations</li>
+                        <li>☐ Social sharing (share scores to Twitter/Facebook)</li>
+                        <li>☐ Dark mode for all interfaces</li>
+                        <li>☐ Question categories (Rock, Pop, 80s, etc.)</li>
+                        <li>☐ Difficulty levels (Easy, Medium, Hard)</li>
+                    </ul>
+                </div>
+
+                <div class="phase future">
+                    <h3>🎨 Phase 3: Advanced Features (FUTURE)</h3>
+                    <ul>
+                        <li>☐ Team/multiplayer modes</li>
+                        <li>☐ Tournament system with brackets</li>
+                        <li>☐ Custom themes for display screen</li>
+                        <li>☐ Playlist management for DJs</li>
+                        <li>☐ Advanced analytics & insights</li>
+                        <li>☐ Mobile apps (iOS/Android)</li>
+                        <li>☐ Audio playback with Spotify previews</li>
+                        <li>☐ Chat & reactions during games</li>
+                    </ul>
+                </div>
+
+                <div class="phase future">
+                    <h3>🏢 Phase 4: Enterprise (FUTURE)</h3>
+                    <ul>
+                        <li>☐ Multi-venue support</li>
+                        <li>☐ White-label branding</li>
+                        <li>☐ Payment integration</li>
+                        <li>☐ Admin super-panel</li>
+                        <li>☐ Public API for third-party apps</li>
+                        <li>☐ Advanced security features</li>
+                        <li>☐ Sponsor/ad integration</li>
+                        <li>☐ Export game data & reports</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARCHITECTURE SECTION -->
+        <div id="architecture" class="section">
+            <div class="architecture">
+                <h2>🎯 System Architecture</h2>
+                <div class="arch-diagram">
+┌─────────────────────────────────────────────────────────────────┐
+│                     BLIND TEST BAR APP                          │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                ┌─────────────┼─────────────┐
+                │             │             │
+         ┌──────▼──────┐ ┌───▼────┐ ┌─────▼──────┐
+         │   Backend   │ │Frontend│ │Infrastructure│
+         │   (API)     │ │  (UI)  │ │  & DevOps   │
+         └──────┬──────┘ └───┬────┘ └─────┬──────┘
+                │            │            │
+       ┌────────┼────────┐   │    ┌───────┼────────┐
+       │        │        │   │    │       │        │
+   ┌───▼──┐ ┌──▼──┐ ┌──▼───▼──┐ │   ┌───▼──┐ ┌──▼────┐
+   │Models│ │Socket│ │Services │ │   │ Docs │ │Deploy │
+   │      │ │ .io  │ │         │ │   │      │ │       │
+   └──────┘ └─────┘ └─────────┘ │   └──────┘ └───────┘
+                                 │
+                    ┌────────────┼────────────┐
+                    │            │            │
+                ┌───▼───┐   ┌───▼───┐   ┌───▼────┐
+                │Player │   │  DJ   │   │Display │
+                │ Page  │   │ Panel │   │ Screen │
+                └───┬───┘   └───┬───┘   └───┬────┘
+                    │           │           │
+                    └───────────┼───────────┘
+                                │
+                         ┌──────▼──────┐
+                         │  Socket.io  │
+                         │  WebSocket  │
+                         └──────┬──────┘
+                                │
+                         ┌──────▼──────┐
+                         │   Backend   │
+                         │   Server    │
+                         └──────┬──────┘
+                                │
+                         ┌──────▼──────┐
+                         │  Database   │
+                         │  (SQLite/   │
+                         │  PostgreSQL)│
+                         └─────────────┘
+
+Data Flow:
+1. Player scans QR → Opens Player Interface
+2. Player logs in → JWT token stored
+3. Joins game via Socket.io → Real-time connection
+4. DJ starts question → Socket broadcasts to all
+5. Players submit answers → Scored in real-time
+6. Leaderboard updates → Socket pushes to Display
+                </div>
+
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">🔌 Technology Stack</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                    <div style="padding: 15px; background: #f9fafb; border-radius: 8px;">
+                        <h4 style="color: #1e3a8a; margin-bottom: 10px;">Backend</h4>
+                        <ul style="margin-left: 20px; color: #4b5563;">
+                            <li>Node.js + Express</li>
+                            <li>TypeScript</li>
+                            <li>Socket.io</li>
+                            <li>Sequelize ORM</li>
+                            <li>JWT Auth</li>
+                        </ul>
+                    </div>
+                    <div style="padding: 15px; background: #f9fafb; border-radius: 8px;">
+                        <h4 style="color: #1e3a8a; margin-bottom: 10px;">Frontend</h4>
+                        <ul style="margin-left: 20px; color: #4b5563;">
+                            <li>React 18</li>
+                            <li>TypeScript</li>
+                            <li>Socket.io Client</li>
+                            <li>TailwindCSS</li>
+                            <li>React Router</li>
+                        </ul>
+                    </div>
+                    <div style="padding: 15px; background: #f9fafb; border-radius: 8px;">
+                        <h4 style="color: #1e3a8a; margin-bottom: 10px;">External APIs</h4>
+                        <ul style="margin-left: 20px; color: #4b5563;">
+                            <li>Spotify Web API</li>
+                            <li>QR Code Generator</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AGENTS SECTION -->
+        <div id="agents" class="section">
+            <div class="roadmap">
+                <h2>🤖 Autonomous Agent Guide</h2>
+                <p style="margin-bottom: 30px; color: #6b7280;">How to assign work to different agents for parallel development</p>
+
+                <h3 style="margin-bottom: 15px;">✅ Safe for Parallel Agents</h3>
+                <div style="padding: 20px; background: #D1FAE5; border-radius: 10px; margin-bottom: 30px;">
+                    <h4 style="color: #065f46; margin-bottom: 15px;">Example: Add User Profiles + Sound Effects + Analytics</h4>
+                    <div style="display: grid; gap: 15px;">
+                        <div style="background: white; padding: 15px; border-radius: 8px;">
+                            <strong>Agent A:</strong> User Profile System
+                            <ul style="margin-left: 20px; margin-top: 10px; color: #4b5563;">
+                                <li>Domain 1: Add UserProfile model</li>
+                                <li>Domain 4: Add profile API endpoints</li>
+                                <li>Domain 5: Add ProfileScreen.tsx</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 8px;">
+                            <strong>Agent B:</strong> Sound Effects
+                            <ul style="margin-left: 20px; margin-top: 10px; color: #4b5563;">
+                                <li>Domain 5: Add sound effects to Player</li>
+                                <li>Domain 6: Add sound effects to DJ Panel</li>
+                                <li>Domain 7: Add sound effects to Display</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 8px;">
+                            <strong>Agent C:</strong> Analytics Dashboard
+                            <ul style="margin-left: 20px; margin-top: 10px; color: #4b5563;">
+                                <li>Domain 2: Add statsService.ts</li>
+                                <li>Domain 4: Add analytics endpoints</li>
+                                <li>Domain 6: Add AnalyticsDashboard.tsx</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #047857;"><strong>Why it works:</strong> Different domains, no file conflicts, independent features</p>
+                </div>
+
+                <h3 style="margin-bottom: 15px;">⚠️ Requires Sequential Execution</h3>
+                <div style="padding: 20px; background: #FEF3C7; border-radius: 10px; margin-bottom: 30px;">
+                    <h4 style="color: #92400e; margin-bottom: 15px;">Example: Team Mode Feature</h4>
+                    <div style="display: grid; gap: 15px;">
+                        <div style="background: white; padding: 15px; border-radius: 8px;">
+                            <strong>Step 1 - Agent A:</strong> Database Schema
+                            <ul style="margin-left: 20px; margin-top: 10px; color: #4b5563;">
+                                <li>Create Team model</li>
+                                <li>Create TeamMember model</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 8px;">
+                            <strong>Step 2 - Agent B:</strong> Backend Logic
+                            <ul style="margin-left: 20px; margin-top: 10px; color: #4b5563;">
+                                <li>Add teamService.ts (depends on models)</li>
+                                <li>Add team API endpoints</li>
+                            </ul>
+                        </div>
+                        <div style="background: white; padding: 15px; border-radius: 8px;">
+                            <strong>Step 3 - Agent C:</strong> Frontend
+                            <ul style="margin-left: 20px; margin-top: 10px; color: #4b5563;">
+                                <li>Add team creation UI (depends on API)</li>
+                                <li>Add team gameplay logic</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p style="margin-top: 15px; color: #92400e;"><strong>Why sequential:</strong> Each step depends on the previous one</p>
+                </div>
+
+                <h3 style="margin-bottom: 15px;">💡 How to Request Agent Work</h3>
+                <div style="padding: 20px; background: #DBEAFE; border-radius: 10px;">
+                    <p style="margin-bottom: 15px;"><strong>For parallel work, say:</strong></p>
+                    <div style="background: white; padding: 15px; border-radius: 8px; font-family: monospace; color: #1e40af; margin-bottom: 15px;">
+"I need to add these features in parallel:<br>
+1. Player profile system with avatars<br>
+2. Sound effects for all interfaces<br>
+3. Export game results to CSV<br>
+<br>
+Please use separate agents for each."
+                    </div>
+
+                    <p style="margin-bottom: 15px;"><strong>For sequential work, say:</strong></p>
+                    <div style="background: white; padding: 15px; border-radius: 8px; font-family: monospace; color: #1e40af;">
+"Add team mode feature:<br>
+1. First, plan the database schema<br>
+2. Then implement the backend logic<br>
+3. Finally, build the UI"
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active from all buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionName).classList.add('active');
+
+            // Add active to clicked button
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
