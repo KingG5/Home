@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Test Bar App - Visual Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .demo-screen {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            min-height: 700px;
+        }
+
+        .demo-screen.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Player Interface */
+        .player-header {
+            background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+            padding: 20px;
+            color: white;
+        }
+
+        .player-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .timer-section {
+            padding: 30px;
+            text-align: center;
+            background: #f9fafb;
+        }
+
+        .timer {
+            font-size: 5em;
+            font-weight: bold;
+            color: #8B5CF6;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #8B5CF6;
+            width: 60%;
+            transition: width 1s linear;
+        }
+
+        .question-section {
+            padding: 30px;
+        }
+
+        .question-text {
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1f2937;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 20px;
+            background: #f3f4f6;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 3px solid transparent;
+        }
+
+        .option:hover {
+            background: #e5e7eb;
+            transform: scale(1.02);
+        }
+
+        .option.selected {
+            background: #8B5CF6;
+            color: white;
+        }
+
+        .option.correct {
+            background: #10B981;
+            color: white;
+        }
+
+        .option.wrong {
+            background: #EF4444;
+            color: white;
+        }
+
+        .leaderboard {
+            padding: 30px;
+        }
+
+        .leaderboard h3 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #1f2937;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .leaderboard-item.current {
+            background: #8B5CF6;
+            color: white;
+            font-weight: bold;
+        }
+
+        .rank {
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        /* DJ Interface */
+        .dj-header {
+            background: linear-gradient(135deg, #EC4899 0%, #DB2777 100%);
+            padding: 30px;
+            color: white;
+        }
+
+        .dj-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .game-code {
+            font-size: 2em;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+        }
+
+        .dj-controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 30px;
+        }
+
+        .control-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-success {
+            background: #10B981;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #EF4444;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #F59E0B;
+            color: white;
+        }
+
+        .btn-primary {
+            background: #8B5CF6;
+            color: white;
+        }
+
+        .questions-list {
+            padding: 30px;
+            background: #f9fafb;
+        }
+
+        .question-item {
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #8B5CF6;
+        }
+
+        .question-item.active {
+            background: #8B5CF6;
+            color: white;
+            border-left-color: #5B21B6;
+        }
+
+        /* Display Interface */
+        .display-header {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            padding: 40px;
+            color: white;
+            text-align: center;
+        }
+
+        .display-title {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .game-status {
+            font-size: 1.5em;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 30px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .current-question {
+            padding: 50px;
+            text-align: center;
+            background: white;
+        }
+
+        .question-title {
+            font-size: 2.5em;
+            color: #1f2937;
+            margin-bottom: 40px;
+        }
+
+        .big-timer {
+            font-size: 8em;
+            font-weight: bold;
+            color: #10B981;
+            margin: 30px 0;
+        }
+
+        .podium {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 30px;
+            padding: 50px;
+            background: #f9fafb;
+        }
+
+        .podium-place {
+            text-align: center;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .podium-place.first {
+            background: linear-gradient(135deg, #FCD34D 0%, #F59E0B 100%);
+            color: white;
+            transform: translateY(-30px);
+        }
+
+        .podium-place.second {
+            background: linear-gradient(135deg, #D1D5DB 0%, #9CA3AF 100%);
+            color: white;
+        }
+
+        .podium-place.third {
+            background: linear-gradient(135deg, #FDBA74 0%, #F97316 100%);
+            color: white;
+        }
+
+        .medal {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        .place-number {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .player-name {
+            font-size: 1.3em;
+            margin: 10px 0;
+        }
+
+        .player-score {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            color: white;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Blind Test Bar App</h1>
+            <p>Interactive Music Quiz - Visual Demo</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showScreen('player')">📱 Player Interface</button>
+            <button class="tab" onclick="showScreen('dj')">🎛️ DJ Control Panel</button>
+            <button class="tab" onclick="showScreen('display')">📺 Display Screen</button>
+        </div>
+
+        <!-- PLAYER INTERFACE -->
+        <div id="player" class="demo-screen active">
+            <div class="player-header">
+                <h2>Friday Night Blind Test</h2>
+                <p>Playing as: <strong>MusicFan123</strong></p>
+                <div class="player-stats">
+                    <div class="stat">
+                        <div class="stat-value">850</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">#3</div>
+                        <div class="stat-label">Rank</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">5/8</div>
+                        <div class="stat-label">Correct</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="two-column" style="background: white;">
+                <div>
+                    <div class="timer-section">
+                        <div class="timer">18s</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-section">
+                        <div class="question-text">
+                            What is the name of this track?
+                        </div>
+                        <div class="options">
+                            <div class="option">Bohemian Rhapsody</div>
+                            <div class="option selected">Sweet Child O' Mine</div>
+                            <div class="option">Stairway to Heaven</div>
+                            <div class="option">Hotel California</div>
+                        </div>
+                        <div style="margin-top: 30px; padding: 20px; background: #DBEAFE; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 1.5em; font-weight: bold; color: #1E40AF;">⏳ Answer submitted!</div>
+                            <div style="color: #1E3A8A; margin-top: 10px;">Waiting for question to end...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="leaderboard">
+                    <h3>🏆 Leaderboard</h3>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">#1</span> RockStar</span>
+                        <span style="font-weight: bold;">1250</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">#2</span> DJ_Mike</span>
+                        <span style="font-weight: bold;">1050</span>
+                    </div>
+                    <div class="leaderboard-item current">
+                        <span><span class="rank">#3</span> MusicFan123</span>
+                        <span>850</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">#4</span> QuizMaster</span>
+                        <span style="font-weight: bold;">720</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">#5</span> PartyTime</span>
+                        <span style="font-weight: bold;">680</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DJ INTERFACE -->
+        <div id="dj" class="demo-screen">
+            <div class="dj-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div class="dj-title">🎵 Friday Night Blind Test</div>
+                    <div class="game-code">Code: ABC123</div>
+                    <div style="margin-top: 15px; background: rgba(255,255,255,0.2); padding: 10px 20px; border-radius: 20px; display: inline-block;">
+                        <strong>Status:</strong> ACTIVE ● <strong>Players:</strong> 12
+                    </div>
+                </div>
+                <div class="qr-code">📱</div>
+            </div>
+
+            <div class="two-column" style="background: white;">
+                <div>
+                    <div class="dj-controls">
+                        <button class="control-btn btn-success">▶️ Start Question</button>
+                        <button class="control-btn btn-danger">⏹️ End Question</button>
+                        <button class="control-btn btn-warning">⏸️ Pause Game</button>
+                        <button class="control-btn btn-primary">▶️ Resume Game</button>
+                    </div>
+
+                    <div style="padding: 30px; background: #EEF2FF; border-top: 2px solid #E0E7FF;">
+                        <div style="font-weight: bold; color: #4338CA; margin-bottom: 10px;">Current Question:</div>
+                        <div style="font-size: 1.2em; font-weight: bold;">Sweet Child O' Mine - Guns N' Roses</div>
+                        <div style="color: #6B7280; margin-top: 5px;">Question 3 of 15 • 30s time limit</div>
+                    </div>
+
+                    <div class="questions-list">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="font-size: 1.5em; color: #1f2937;">Questions (15)</h3>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="control-btn btn-primary" style="padding: 10px 20px; font-size: 0.9em;">🔍 Spotify</button>
+                                <button class="control-btn btn-success" style="padding: 10px 20px; font-size: 0.9em;">➕ Manual</button>
+                            </div>
+                        </div>
+                        <div class="question-item">
+                            <div style="font-weight: bold;">1. Bohemian Rhapsody</div>
+                            <div style="color: #6B7280; font-size: 0.9em;">Queen</div>
+                        </div>
+                        <div class="question-item">
+                            <div style="font-weight: bold;">2. Hotel California</div>
+                            <div style="color: #6B7280; font-size: 0.9em;">Eagles</div>
+                        </div>
+                        <div class="question-item active">
+                            <div style="font-weight: bold;">3. Sweet Child O' Mine ⭐</div>
+                            <div style="opacity: 0.9; font-size: 0.9em;">Guns N' Roses</div>
+                        </div>
+                        <div class="question-item">
+                            <div style="font-weight: bold;">4. Smells Like Teen Spirit</div>
+                            <div style="color: #6B7280; font-size: 0.9em;">Nirvana</div>
+                        </div>
+                        <div class="question-item">
+                            <div style="font-weight: bold;">5. Billie Jean</div>
+                            <div style="color: #6B7280; font-size: 0.9em;">Michael Jackson</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding: 30px; background: #F9FAFB;">
+                    <h3 style="font-size: 1.5em; margin-bottom: 20px; color: #1f2937;">Live Leaderboard</h3>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">#1</span> RockStar</span>
+                        <span style="font-weight: bold;">1250</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">#2</span> DJ_Mike</span>
+                        <span style="font-weight: bold;">1050</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">#3</span> MusicFan123</span>
+                        <span style="font-weight: bold;">850</span>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">#4</span> QuizMaster</span>
+                        <span style="font-weight: bold;">720</span>
+                    </div>
+                    <div style="margin-top: 20px; padding: 15px; background: white; border-radius: 10px; text-align: center;">
+                        <div style="color: #6B7280;">Total Players</div>
+                        <div style="font-size: 2em; font-weight: bold; color: #8B5CF6;">12</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DISPLAY INTERFACE -->
+        <div id="display" class="demo-screen">
+            <div class="display-header">
+                <div class="display-title">🎵 Friday Night Blind Test</div>
+                <div style="font-size: 1.2em; margin-top: 10px;">Game Code: ABC123</div>
+                <div class="game-status">ACTIVE</div>
+            </div>
+
+            <div class="current-question">
+                <div class="question-title">What is the name of this track?</div>
+                <div class="big-timer">18s</div>
+                <div class="progress-bar" style="max-width: 600px; margin: 0 auto; height: 30px;">
+                    <div class="progress-fill" style="background: #10B981;"></div>
+                </div>
+            </div>
+
+            <div class="podium">
+                <div class="podium-place second">
+                    <div class="medal">🥈</div>
+                    <div class="place-number">2nd</div>
+                    <div class="player-name">DJ_Mike</div>
+                    <div class="player-score">1050</div>
+                    <div style="font-size: 0.9em; opacity: 0.9; margin-top: 5px;">7 correct</div>
+                </div>
+
+                <div class="podium-place first">
+                    <div class="medal">👑</div>
+                    <div class="place-number">1st</div>
+                    <div class="player-name">RockStar</div>
+                    <div class="player-score">1250</div>
+                    <div style="font-size: 0.9em; opacity: 0.9; margin-top: 5px;">8 correct</div>
+                </div>
+
+                <div class="podium-place third">
+                    <div class="medal">🥉</div>
+                    <div class="place-number">3rd</div>
+                    <div class="player-name">MusicFan123</div>
+                    <div class="player-score">850</div>
+                    <div style="font-size: 0.9em; opacity: 0.9; margin-top: 5px;">5 correct</div>
+                </div>
+            </div>
+
+            <div style="padding: 30px; background: #F9FAFB; text-align: center;">
+                <div style="font-size: 1.5em; color: #6B7280; margin-bottom: 20px;">Full Rankings</div>
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <div class="leaderboard-item">
+                        <span><span class="rank">#4</span> QuizMaster</span>
+                        <div>
+                            <span style="font-weight: bold; font-size: 1.3em;">720</span>
+                            <span style="color: #6B7280; margin-left: 10px;">6 correct</span>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">#5</span> PartyTime</span>
+                        <div>
+                            <span style="font-weight: bold; font-size: 1.3em;">680</span>
+                            <span style="color: #6B7280; margin-left: 10px;">5 correct</span>
+                        </div>
+                    </div>
+                    <div class="leaderboard-item">
+                        <span><span class="rank">#6</span> MusicLover</span>
+                        <div>
+                            <span style="font-weight: bold; font-size: 1.3em;">620</span>
+                            <span style="color: #6B7280; margin-left: 10px;">5 correct</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 30px; font-size: 1.3em; color: #8B5CF6;">
+                    👥 12 players in the game
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenName) {
+            // Hide all screens
+            document.querySelectorAll('.demo-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected screen
+            document.getElementById(screenName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Animate timer
+        setInterval(() => {
+            const timers = document.querySelectorAll('.timer, .big-timer');
+            timers.forEach(timer => {
+                let current = parseInt(timer.textContent);
+                if (current > 0) {
+                    timer.textContent = (current - 1) + 's';
+                    if (current - 1 <= 5) {
+                        timer.style.color = '#EF4444';
+                    }
+                }
+            });
+
+            const progressFills = document.querySelectorAll('.progress-fill');
+            progressFills.forEach(fill => {
+                let current = parseInt(fill.style.width) || 60;
+                if (current > 0) {
+                    fill.style.width = (current - 2) + '%';
+                    if (current - 2 <= 20) {
+                        fill.style.background = '#EF4444';
+                    }
+                }
+            });
+        }, 1000);
+    </script>
+</body>
+</html>
